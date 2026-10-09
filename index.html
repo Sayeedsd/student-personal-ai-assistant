@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyMate AI — Student Personal Assistant</title>
+<style>
+:root{--bg:#f4f7fb;--panel:#fff;--ink:#172033;--muted:#697386;--brand:#5b5ce2;--brand2:#8585ff;--line:#e7eaf2;--soft:#f0f1ff;--green:#1b9a72}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.app{display:grid;grid-template-columns:260px minmax(0,1fr);max-width:1250px;margin:24px auto;padding:0 18px;gap:18px;min-height:calc(100vh - 48px)}
+.sidebar,.main{background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:0 12px 35px rgba(35,45,80,.05)}
+.sidebar{padding:22px 16px;display:flex;flex-direction:column;gap:22px}.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:18px}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:white;font-size:21px}
+.tag{color:var(--muted);font-size:12px;margin-top:3px}.newchat{border:0;background:var(--brand);color:white;padding:12px 14px;border-radius:12px;font-weight:700;cursor:pointer}.side-label{font-size:11px;letter-spacing:1.4px;color:#9aa2b3;font-weight:800;margin-bottom:2px}.side-item{display:flex;gap:10px;padding:10px;border-radius:11px;color:#566075;font-size:14px}.side-item.active{background:var(--soft);color:var(--brand);font-weight:700}.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:16px;font-size:12px;line-height:1.6;color:var(--muted)}
+.main{display:flex;flex-direction:column;min-height:690px;overflow:hidden}.topbar{padding:20px 26px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.top-title{font-weight:800;font-size:17px}.online{font-size:12px;color:var(--green);display:flex;align-items:center;gap:7px}.dot{width:8px;height:8px;background:var(--green);border-radius:50%}
+.content{padding:28px;flex:1;display:flex;flex-direction:column;gap:18px;overflow-y:auto}.welcome h1{font-size:clamp(24px,4vw,34px);letter-spacing:-1px;margin:0 0 8px}.welcome p{color:var(--muted);margin:0;line-height:1.6}.quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:4px 0 8px}.quick{border:1px solid var(--line);background:#fff;border-radius:15px;padding:15px;text-align:left;cursor:pointer;transition:.15s}.quick:hover{border-color:#b8b9ff;transform:translateY(-1px);background:#fcfcff}.quick strong{display:block;font-size:14px;margin-bottom:6px}.quick span{font-size:12px;color:var(--muted);line-height:1.4}.messages{display:flex;flex-direction:column;gap:14px}.msg{display:flex;gap:10px;align-items:flex-start;max-width:90%}.msg.user{align-self:flex-end;flex-direction:row-reverse}.avatar{flex:0 0 32px;width:32px;height:32px;border-radius:11px;background:var(--soft);color:var(--brand);display:grid;place-items:center;font-size:13px;font-weight:800}.user .avatar{background:#20283a;color:white}.bubble{background:#f6f7fb;border:1px solid var(--line);border-radius:4px 15px 15px 15px;padding:12px 14px;font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}.user .bubble{background:var(--brand);color:white;border-color:var(--brand);border-radius:15px 4px 15px 15px}.composer-wrap{padding:18px 24px 22px;border-top:1px solid var(--line)}.composer{display:flex;gap:10px;border:1px solid #dfe3ef;border-radius:15px;padding:7px;background:white;box-shadow:0 4px 16px rgba(35,45,80,.04)}.composer input{border:0;outline:0;flex:1;min-width:0;padding:10px 12px;font:inherit;font-size:14px}.send{border:0;background:var(--brand);color:white;border-radius:11px;padding:0 18px;font-weight:800;cursor:pointer}.hint{text-align:center;color:#9aa2b3;font-size:11px;margin-top:10px}.typing{color:var(--muted);font-size:12px;padding-left:42px}
+@media(max-width:760px){.app{display:block;margin:0;padding:0;min-height:100vh}.sidebar{display:none}.main{border-radius:0;min-height:100vh;border:0}.topbar{padding:17px 18px}.content{padding:22px 16px}.composer-wrap{padding:13px 14px 17px}.quick-grid{grid-template-columns:1fr}.msg{max-width:100%}.welcome h1{font-size:27px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">✦</div><div>StudyMate AI<div class="tag">Your personal study partner</div></div></div>
+    <button class="newchat" id="newChat">＋ New conversation</button>
+    <div><div class="side-label">YOUR SPACE</div><div class="side-item active">✦ &nbsp; Student assistant</div><div class="side-item">▤ &nbsp; Study planning</div><div class="side-item">◷ &nbsp; Time management</div><div class="side-item">◎ &nbsp; Exam preparation</div></div>
+    <div class="side-foot"><strong>Prototype version</strong><br>Answers are generated from built-in guidance. No personal data is sent to a server.</div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div class="top-title">Student Personal Assistant</div><div class="online"><span class="dot"></span> Ready to help</div></header>
+    <section class="content" id="content">
+      <div class="welcome" id="welcome"><h1>Hey student, what are we working on? 👋</h1><p>I'm StudyMate, your study companion. Ask me about study plans, exam preparation, productivity, or staying motivated.</p></div>
+      <div class="quick-grid" id="quickGrid">
+        <button class="quick" data-prompt="Make me a daily study plan"><strong>📅 Build a study plan</strong><span>Create a realistic routine for your day</span></button>
+        <button class="quick" data-prompt="How should I prepare for exams?"><strong>🎯 Prepare for exams</strong><span>Turn topics into manageable revision steps</span></button>
+        <button class="quick" data-prompt="Give me tips to stop procrastinating"><strong>⚡ Beat procrastination</strong><span>Start small and build momentum</span></button>
+        <button class="quick" data-prompt="Explain the Pomodoro technique"><strong>⏱ Focus better</strong><span>Learn a simple focus method</span></button>
+      </div>
+      <div class="messages" id="messages" aria-live="polite"></div>
+    </section>
+    <footer class="composer-wrap"><form class="composer" id="chatForm"><input id="userInput" autocomplete="off" placeholder="Ask StudyMate anything about student life..." aria-label="Your message"><button class="send" type="submit">Send ➤</button></form><div class="hint">StudyMate can make mistakes. Check important academic information with your teacher.</div></footer>
+  </main>
+</div>
+<script>
+const messagesEl=document.getElementById('messages');
+const input=document.getElementById('userInput');
+const form=document.getElementById('chatForm');
+const quickGrid=document.getElementById('quickGrid');
+const welcome=document.getElementById('welcome');
+function addMessage(text,who){
+  const row=document.createElement('div');row.className='msg '+who;
+  const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=who==='user'?'YOU':'✦';
+  const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;
+  row.append(avatar,bubble);messagesEl.appendChild(row);
+  document.getElementById('content').scrollTop=document.getElementById('content').scrollHeight;
+}
+function replyFor(raw){
+ const q=raw.toLowerCase();
+ if(/hello|hi\\b|hey|good morning/.test(q)) return "Hi! 👋 I'm StudyMate, your student assistant. I can help with study plans, exam preparation, focus, time management, and motivation. What would you like to work on?";
+ if(/study plan|timetable|schedule|routine/.test(q)) return "Here’s a simple study plan you can adapt:\\n\\n1. List the 3 most important tasks for today.\\n2. Study your hardest subject for 25 minutes.\\n3. Take a 5-minute break, then repeat.\\n4. Practise questions instead of only rereading notes.\\n5. Spend 15 minutes reviewing what you learned.\\n\\nTell me your subjects and available hours, and I can suggest a more specific plan.";
+ if(/exam|prepare|revision|test|mid/.test(q)) return "Try this exam-preparation method:\\n\\n1. Write down the syllabus and mark difficult topics.\\n2. Prioritise topics your teacher emphasised and past-paper patterns.\\n3. Use 25–30 minute focused sessions.\\n4. Close your notes and recall key points from memory.\\n5. Solve practice questions and review mistakes.\\n6. Sleep properly before the exam.\\n\\nStart with one topic now rather than trying to finish everything at once.";
+ if(/procrastinat|lazy|motivat|can't start|cannot start/.test(q)) return "Don't wait to feel motivated—make the first step tiny. Put your phone away, open one topic, and work for just 5 minutes. Choose one clear task, such as solving two questions. After starting, decide whether to continue for another 20 minutes. Small completed tasks build momentum.";
+ if(/pomodoro|focus|concentrat|distract/.test(q)) return "The Pomodoro technique is a simple focus method:\\n\\n• Choose one task.\\n• Focus for 25 minutes without checking your phone.\\n• Take a 5-minute break.\\n• Repeat 4 times, then take a longer 15–30 minute break.\\n\\nIf 25 minutes feels difficult, start with 10 minutes. Keep breaks away from endless scrolling.";
+ if(/stress|anxious|overwhelm|worried|pressure/.test(q)) return "It can feel overwhelming when everything piles up. Pause for a moment, take a few slow breaths, and write down what is worrying you. Choose the smallest useful next action and work on only that. If the stress is persistent or feels unmanageable, speak with someone you trust or a campus counsellor.";
+ if(/attendance|absent|classes/.test(q)) return "To improve attendance, track each class and calculate the requirement using your college's official rules. Attend consistently, set a reminder before leaving, and ask your faculty about any shortage early. If you share your classes attended and total classes held, I can help calculate your current percentage.";
+ if(/javascript|html|css|programming|coding/.test(q)) return "A practical way to learn programming is: (1) understand one concept, (2) type a small example yourself, (3) change it and predict the result, and (4) build a tiny project. For web development, practise HTML structure, CSS layout, then JavaScript events and DOM updates. What topic are you learning right now?";
+ if(/thank/.test(q)) return "You're welcome! 🌟 Keep it simple: one clear task, one focused session, then the next step. What else can I help you with?";
+ if(/help|what can you do|features/.test(q)) return "I can help you with:\\n• Daily study plans and routines\\n• Exam preparation and revision\\n• Focus and procrastination\\n• Time management\\n• Programming study tips\\n• Attendance calculations\\n\\nAsk a question or tap one of the suggested actions above.";
+ return "Here’s a useful way to approach that as a student:\\n\\n1. Define the exact outcome you need.\\n2. Break it into small tasks that take 15–30 minutes.\\n3. Start with the most important task.\\n4. Test what you learned by explaining it or solving a question.\\n5. Review your progress and adjust your plan.\\n\\nI’m a prototype with built-in responses, so I may not understand every question yet. Try asking about a study plan, exams, focus, attendance, or programming.";
+}
+function sendMessage(text){
+ const clean=text.trim();if(!clean)return;
+ welcome.style.display='none';quickGrid.style.display='none';
+ addMessage(clean,'user');input.value='';
+ window.setTimeout(()=>{addMessage(replyFor(clean),'bot');},180);
+}
+form.addEventListener('submit',e=>{e.preventDefault();sendMessage(input.value);});
+quickGrid.addEventListener('click',e=>{const btn=e.target.closest('button[data-prompt]');if(btn)sendMessage(btn.dataset.prompt);});
+document.getElementById('newChat').addEventListener('click',()=>{
+ messagesEl.innerHTML='';welcome.style.display='block';quickGrid.style.display='grid';input.value='';input.focus();
+});
+</script>
+</body>
+</html>
